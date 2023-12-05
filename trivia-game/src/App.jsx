@@ -20,6 +20,7 @@ function App() {
         {categoryList.map((category) => (
           <Category 
             key={category.id}
+            categoryId={category.id}
             name={category.name}
           />
         ))}
@@ -28,10 +29,14 @@ function App() {
   )
 }
 
-function Category({name}) {
+function Category({name, categoryId}) {
+
+  const clickCategory = () => {
+    console.log(`https://opentdb.com/api.php?amount=10&category=${categoryId}`);
+  }
 
   return (
-    <div>
+    <div onClick={clickCategory}>
       <div>{name}</div>
     </div>
   )
