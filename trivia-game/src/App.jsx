@@ -15,6 +15,9 @@ function App() {
       console.log(res.data)})
   }, [])
 
+  if (loading) {
+    return <h1> Page loading ⏳</h1>
+  }
 
   return (
     <div>
