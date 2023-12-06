@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import axios from 'axios'
+import QuizPage from './components/quiz-page'
 
 function App() {
   const [categoryList, setCategoryList] = useState([])
   const [loading, setLoading] = useState(true)
+  const [selectedCategoryId, setSelectedCategoryID] = useState(null)
+
+
 
   useEffect(() => {
     axios
@@ -19,30 +23,56 @@ function App() {
     return <h1> Page loading ⏳</h1>
   }
 
+  console.log(`the chosen category is ${selectedCategoryId}`)
+
   return (
     <div>
       <h1>React Trivia Game</h1>
       <div className="category-list">
-        {categoryList.map((category) => (
+        {categoryList.map((category) => {
+          return (
           <Category 
             key={category.id}
-            categoryId={category.id}
+            myCategoryId={category.id}
             name={category.name}
-          />
-        ))}
+            selectedCategoryId={selectedCategoryId}
+            chooseThisCategory={()=> {
+              //set the selected category id to my category id
+              setSelectedCategoryID(category.id)
+            }}
+          />)
+          })}
       </div>
     </div>
   )
 }
 
-function Category({name, categoryId}) {
+function Category({name, myCategoryId, chooseThisCategory, selectedCategoryId }) {
 
-  const clickCategory = () => {
-    console.log(`https://opentdb.com/api.php?amount=10&category=${categoryId}`);
+
+  /**
+   * Is the selectedCategoryId the same as mycategoryId
+   */
+  const categoryIsSelected = myCategoryId === selectedCategoryId; 
+
+  if(selectedCategoryId !== null && !categoryIsSelected) return null;
+
+  const chooseCategory = () => {
+    console.log(myCategoryId)
+    console.log(`https://opentdb.com/api.php?amount=10&category=${myCategoryId}`);
+    chooseThisCategory();
+  }
+  console.log(`my caregory is ${myCategoryId} - ${name} - selected category is ${selectedCategoryId}, - am i selected? ${categoryIsSelected}`)
+
+  if (categoryIsSelected) {
+
+   return (
+       <QuizPage categoryID={myCategoryId}/>
+     )
   }
 
   return (
-    <div onClick={clickCategory}>
+    <div onClick={chooseCategory}>
       <div>{name}</div>
     </div>
   )
