@@ -32,7 +32,7 @@ function Quiz({question,correctAnswer,incorrectAnswers}) {
 
     const answers = [...incorrectAnswers, correctAnswer];
 
-    const selectedAnswer = ( value) => {
+    const selectedAnswer = (value) => {
         //handle the clicking of answers in here
         if(value === correctAnswer) {
             window.alert('YOU GOT IT RIGHT')
