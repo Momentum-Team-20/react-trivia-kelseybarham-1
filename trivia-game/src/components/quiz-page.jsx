@@ -1,10 +1,35 @@
-import { useState, useEffect } from 'react'
+//This is the component that shows the quiz questions and answers. This is what shows when you click a category.
+
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import {shuffle} from "lodash";
+const renderHTML = (rawHTML) => React.createElement("div", { dangerouslySetInnerHTML: { __html: rawHTML } });
+
 
 const QuizPage = ({ 
     categoryID, 
 }) => { 
     const [questions, setQuestions] = useState([])
+
+    const isQuestionEmpty = questions.length === 0;
+
+    const [questionObjectIndex, setQuestionObjectIndex] = useState(0);
+
+    const handleNextQuestion = () => {
+        if (selectedAnswer === props.data[questionObjectIndex].correct_answer) {
+            console.log(co)
+        }
+    }
+
+
+    const advanceQuestion = () => {
+        setQuestionObjectIndex(
+        questionObjectIndex === questions.length - 1
+        ? questionObjectIndex
+        : questionObjectIndex + 1
+    );
+    }
+
 
     useEffect(() => {
         axios
@@ -30,8 +55,9 @@ const QuizPage = ({
 
 function Quiz({question,correctAnswer,incorrectAnswers}) {
 
-    const answers = [...incorrectAnswers, correctAnswer];
-
+    //let answers creates the box for answers and the ... spreads the incorrect answers so they can be in an array with the correct answer. It's copying what's in the incorrect answer array into a new array called answers and also including the correct answer as the last element.
+    let answers = [...incorrectAnswers, correctAnswer];
+    answers = shuffle(answers)
     const selectedAnswer = (value) => {
         //handle the clicking of answers in here
         if(value === correctAnswer) {
@@ -43,7 +69,7 @@ function Quiz({question,correctAnswer,incorrectAnswers}) {
 
     return (
         <div>
-            <h2>{question}</h2>
+            <h2>{renderHTML(question)}</h2>
             <ul> 
             {answers.map((answer,idx)=>{ 
                    return <li onClick={()=> selectedAnswer(answer)} key={idx}><p >{answer}</p></li>
@@ -53,5 +79,7 @@ function Quiz({question,correctAnswer,incorrectAnswers}) {
         </div>
     )
 }
+
+
 
 export default QuizPage
