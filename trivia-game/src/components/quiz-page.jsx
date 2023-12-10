@@ -8,6 +8,7 @@ const renderHTML = (rawHTML) => React.createElement("div", { dangerouslySetInner
 
 const CategoryPage = ({ 
     categoryID, 
+    setSelectedCategoryID
 }) => { 
     const [questions, setQuestions] = useState([])
     const [questionIndex , setQuestionIndex] = useState(0)
@@ -81,7 +82,7 @@ const CategoryPage = ({
                         score={score}
                     />}
                     {
-                        questionIndex === questions.length && <div><WinPage score={score} total={questions.length}/></div>
+                        questionIndex === questions.length && <div><WinPage score={score} total={questions.length} setSelectedCategoryID={setSelectedCategoryID}/></div>
                     }
                     
             </div>
@@ -92,11 +93,14 @@ const CategoryPage = ({
     )
 }
 
-const WinPage = ({score,total}) => (
-    <div>
-        {`Here's your score ${score}/${total}`}
-    </div>
-);
+const WinPage = ({score,total, setSelectedCategoryID}) => {
+     return (<div>
+        <div>{`Here's your score: ${score}/${total}\n\n`}</div>
+        {score / total >= .70 && <div>Congratulations! You win.</div>}
+        {score / total < .70 && <div>Too bad! You lost this category.</div>}
+        <button onClick={() => setSelectedCategoryID(null)}>Return Home</button>
+    </div>);
+};
 
 function Question({question,correctAnswer,incorrectAnswers, setScore, score}) {
 

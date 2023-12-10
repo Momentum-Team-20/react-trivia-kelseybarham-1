@@ -40,6 +40,7 @@ function App() {
               //set the selected category id to my category id
               setSelectedCategoryID(category.id)
             }}
+            setSelectedCategoryID={setSelectedCategoryID}
           />)
           })}
       </div>
@@ -47,7 +48,7 @@ function App() {
   )
 }
 
-function Category({name, myCategoryId, chooseThisCategory, selectedCategoryId }) {
+function Category({name, myCategoryId, chooseThisCategory, selectedCategoryId, setSelectedCategoryID }) {
 
 
   /**
@@ -67,7 +68,9 @@ function Category({name, myCategoryId, chooseThisCategory, selectedCategoryId })
   if (categoryIsSelected) {
 
    return (
-       <CategoryPage categoryID={myCategoryId}/>
+       <CategoryPage 
+        categoryID={myCategoryId}
+        setSelectedCategoryID={setSelectedCategoryID} />
      )
   }
 
