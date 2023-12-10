@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import axios from 'axios'
-import QuizPage from './components/quiz-page'
+import CategoryPage from './components/quiz-page'
 
 function App() {
   const [categoryList, setCategoryList] = useState([])
@@ -67,7 +67,7 @@ function Category({name, myCategoryId, chooseThisCategory, selectedCategoryId })
   if (categoryIsSelected) {
 
    return (
-       <QuizPage categoryID={myCategoryId}/>
+       <CategoryPage categoryID={myCategoryId}/>
      )
   }
 

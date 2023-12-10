@@ -6,10 +6,23 @@ import {shuffle} from "lodash";
 const renderHTML = (rawHTML) => React.createElement("div", { dangerouslySetInnerHTML: { __html: rawHTML } });
 
 
-const QuizPage = ({ 
+const CategoryPage = ({ 
     categoryID, 
 }) => { 
     const [questions, setQuestions] = useState([])
+    const [questionIndex , setQuestionIndex] = useState(0)
+    const [loading, setLoading] = useState(true)
+    const [score , setScore] = useState(0)
+    console.log(`In Category component, the score is: ${score}`)
+
+    useEffect(() => {
+        axios
+            .get(`https://opentdb.com/api.php?amount=10&category=${categoryID}`)
+            .then((res) => {
+                setLoading(false)
+                setQuestions(res.data.results)})
+    }, [categoryID])
+
     /**
      * const questions = [];
      * const setQuestions = ( updatedValue ) {
@@ -30,55 +43,26 @@ const QuizPage = ({
      * 
      */
 
+    
 
 
-
-    const [index , setIndex] = useState(0)
-    const [loading, setLoading] = useState(true)
-    const [questionObjectIndex, setQuestionObjectIndex] = useState(0)
-    const [score , setScore] = useState(0)
-
-    const isQuestionEmpty = questions.length === 0;
-
-    const handleNextQuestion = () => {
-        if (selectedAnswer === props.data[questionObjectIndex].correct_answer) {
-        console.log()
-        }
-    }
-
-
-    const advanceQuestion = () => {
-        setIndex(
-        index === questions.length - 1
-        ? index
-        : index + 1
+    const nextQuestion = () => {
+        setQuestionIndex(
+        questionIndex === questions.length 
+        ? questionIndex
+        : questionIndex + 1
     );
     }
 
     const previousQuestion = () => {
-        setIndex(
-        index ===  0
-        ? index
-        : index - 1
+        setQuestionIndex(
+        questionIndex ===  0
+        ? questionIndex
+        : questionIndex - 1
     );
     }
 
-    const recordAnswer = (event) => {
-        const answer = event.target.value
-        setChosenAnswer(answer)
-        if(answer === quiz[index].correct_answer) {
-            setScore(score + 1)
-        }
-    }
 
-
-    useEffect(() => {
-        axios
-            .get(`https://opentdb.com/api.php?amount=10&category=${categoryID}`)
-            .then((res) => {
-                setLoading(false)
-                setQuestions(res.data.results)})
-    }, [categoryID])
 
 
     if (loading) {
@@ -89,34 +73,44 @@ const QuizPage = ({
         <div>
             <div className="quiz-page">
                 <div className="display">{}</div>
-                    <Quiz 
-                        key={questions[index].id}
-                        question={questions[index].question}
-                        correctAnswer={questions[index].correct_answer}
-                        incorrectAnswers={questions[index].incorrect_answers}
-                    />
+                    {questionIndex < questions.length && <Question 
+                        question={questions[questionIndex].question}
+                        correctAnswer={questions[questionIndex].correct_answer}
+                        incorrectAnswers={questions[questionIndex].incorrect_answers}
+                        setScore={setScore}
+                        score={score}
+                    />}
+                    {
+                        questionIndex === questions.length && <div><WinPage score={score} total={questions.length}/></div>
+                    }
+                    
             </div>
-            {index > 0 && <button onClick={previousQuestion}>Previous Question</button>}
-            {index <= questions.length -1 && <button onClick={advanceQuestion}>Next Question</button>}
+            {questionIndex > 0 && <button onClick={previousQuestion}>Previous Question</button>}
+            {questionIndex <= questions.length -1 && <button onClick={nextQuestion}>Next Question</button>}
 
         </div>
     )
 }
 
-function Quiz({question,correctAnswer,incorrectAnswers}) {
+const WinPage = ({score,total}) => (
+    <div>
+        {`Here's your score ${score}/${total}`}
+    </div>
+);
+
+function Question({question,correctAnswer,incorrectAnswers, setScore, score}) {
 
     //let answers creates the box for answers and the ... spreads the incorrect answers so they can be in an array with the correct answer. It's copying what's in the incorrect answer array into a new array called answers and also including the correct answer as the last element.
     let answers = [...incorrectAnswers, correctAnswer];
     answers = shuffle(answers)
 
-    const [score , setScore] = useState(0)
-
 
     const selectedAnswer = (value) => {
         //handle the clicking of answers in here
         if(value === correctAnswer) {
-            setScore(score + 1)
-            window.alert(`YOU GOT IT RIGHT. Your Score is ${score}`)
+            let newScore = score + 1;
+            setScore(newScore)
+            window.alert(`YOU GOT IT RIGHT. Your Score is ${newScore}`) 
         } else {
         window.alert('Wrongo')
         }
@@ -144,4 +138,4 @@ function Quiz({question,correctAnswer,incorrectAnswers}) {
 
 
 
-export default QuizPage
+export default CategoryPage
