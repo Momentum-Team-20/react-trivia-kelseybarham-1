@@ -27,7 +27,11 @@ function App() {
 
   return (
     <div>
-      <h1>React Trivia Game</h1>
+      <div className='triviaGameBanner'><h1>🧠 React Trivia Game ⭐️</h1></div>
+      <div className='welcomePage'>
+        {selectedCategoryId === null && 
+        <p>Welcome to React Trivia! Please choose a category below, and answer the following ten questions. You will be scored on how many you got right. Good luck!</p>}
+      </div>
       <div className="category-list">
         {categoryList.map((category) => {
           return (
@@ -76,7 +80,7 @@ function Category({name, myCategoryId, chooseThisCategory, selectedCategoryId, s
 
   return (
     <div onClick={chooseCategory}>
-      <div>{name}</div>
+      <div className='listOfCategories'>{name}</div>
     </div>
   )
 }

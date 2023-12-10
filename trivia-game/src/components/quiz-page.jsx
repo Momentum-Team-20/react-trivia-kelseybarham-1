@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import {shuffle} from "lodash";
-const renderHTML = (rawHTML) => React.createElement("div", { dangerouslySetInnerHTML: { __html: rawHTML } });
+const renderHTML = (rawHTML) => React.createElement("span", { dangerouslySetInnerHTML: { __html: rawHTML } });
 
 
 const CategoryPage = ({ 
@@ -74,7 +74,8 @@ const CategoryPage = ({
         <div>
             <div className="quiz-page">
                 <div className="display">{}</div>
-                    {questionIndex < questions.length && <Question 
+                    {questionIndex < questions.length && <Question
+                    nextQuestion={nextQuestion} 
                         question={questions[questionIndex].question}
                         correctAnswer={questions[questionIndex].correct_answer}
                         incorrectAnswers={questions[questionIndex].incorrect_answers}
@@ -86,7 +87,7 @@ const CategoryPage = ({
                     }
                     
             </div>
-            {questionIndex > 0 && <button onClick={previousQuestion}>Previous Question</button>}
+            {questionIndex > 0 && <button onClick={previousQuestion}>Previous Question</button>}{'\n'}
             {questionIndex <= questions.length -1 && <button onClick={nextQuestion}>Next Question</button>}
 
         </div>
@@ -97,12 +98,12 @@ const WinPage = ({score,total, setSelectedCategoryID}) => {
      return (<div>
         <div>{`Here's your score: ${score}/${total}\n\n`}</div>
         {score / total >= .70 && <div>Congratulations! You win.</div>}
-        {score / total < .70 && <div>Too bad! You lost this category.</div>}
+        {score / total < .70 && <div>Too bad! You lost this category.</div>}{'\n'}
         <button onClick={() => setSelectedCategoryID(null)}>Return Home</button>
     </div>);
 };
 
-function Question({question,correctAnswer,incorrectAnswers, setScore, score}) {
+function Question({question,correctAnswer,incorrectAnswers, setScore, score,nextQuestion}) {
 
     //let answers creates the box for answers and the ... spreads the incorrect answers so they can be in an array with the correct answer. It's copying what's in the incorrect answer array into a new array called answers and also including the correct answer as the last element.
     let answers = [...incorrectAnswers, correctAnswer];
@@ -115,24 +116,21 @@ function Question({question,correctAnswer,incorrectAnswers, setScore, score}) {
             let newScore = score + 1;
             setScore(newScore)
             window.alert(`YOU GOT IT RIGHT. Your Score is ${newScore}`) 
+            nextQuestion();
         } else {
         window.alert('Wrongo')
         }
     }
 
-    const allAnswers = [];
-    // if (props.data.length > 0) {
-    //     allAnswers.push();
-    // }
 
     return (
         <div>
             <h2>{renderHTML(question)}</h2>
             <ul> 
             {answers.map((answer,idx)=>{ 
-                   return <li onClick={()=> selectedAnswer(answer)} key={idx}><p >{answer}</p></li>
+                    
+                   return <li className='answer' onClick={()=> selectedAnswer(answer)} key={idx}><p >{`${idx + 1}) `}{renderHTML(answer)}</p></li>
 
-                   //create a next button?
             })
             }
             </ul>
