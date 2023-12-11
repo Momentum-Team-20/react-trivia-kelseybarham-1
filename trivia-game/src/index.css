@@ -63,6 +63,11 @@ button:focus-visible {
   padding: 6px;
 }
 
+.listOfCategories:hover {
+  color: lightskyblue;
+  cursor: pointer;
+}
+
 .answer{
   text-align: left;
   list-style: none;
@@ -73,7 +78,7 @@ button:focus-visible {
 .answer:hover {
   font-weight: bold;
   color:#535bf2;
-  
+
 }
 .welcomePage {
   font-size: larger;
